@@ -1,0 +1,2 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net6.0</TargetFramework><Nullable>disable</Nullable><RollForward>Major</RollForward></PropertyGroup>
+<ItemGroup><Compile Include="../../ctrader/HoldAlarmsNotifier.cs" /><PackageReference Include="cTrader.Automate" Version="1.0.21" /></ItemGroup></Project>

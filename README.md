@@ -12,6 +12,7 @@ private: the token in it identifies your account.
 |---|---|---|
 | MetaTrader 5 / MetaTrader 4 (MQL5 / MQL4) | [`metatrader/`](metatrader/) | [holdalarms.com/docs/metatrader-setup](https://holdalarms.com/docs/metatrader-setup) |
 | NinjaTrader 8 (NinjaScript C#) | [`ninjatrader/`](ninjatrader/) | [holdalarms.com/docs/ninjatrader-setup](https://holdalarms.com/docs/ninjatrader-setup) |
+| cTrader (cBot C#) | [`ctrader/`](ctrader/) | [holdalarms.com/docs/ctrader-setup](https://holdalarms.com/docs/ctrader-setup) |
 
 ## MetaTrader 5 and 4
 
@@ -63,6 +64,20 @@ Good to know:
 - `HoldAlarmsClient.cs` builds for .NET Framework 4.8 and was tested against a local mock server (see [`tests/`](tests/)).
   The indicator was type-checked against stand-ins, not inside NinjaTrader.
 
+## cTrader
+
+1. In cTrader Algo, create a new cBot, replace its code with `ctrader/HoldAlarmsNotifier.cs` and build it.
+2. Add an instance, paste your webhook URL into **Webhook URL** and start it. It sends a test alert on start.
+3. In your own logic, call `SendAlert("buy", Symbol.Ask, "breakout");`.
+
+Good to know:
+
+- `AccessRights.None` is enough; cTrader allows web requests without full access.
+- Web requests don't work in cTrader Cloud (cTrader answers 403 and sends nothing). Run the cBot in cTrader Desktop or the cTrader CLI.
+- Backtests send real web requests in cTrader, so the cBot only sends when it runs live.
+- Each try waits at most 3 seconds; it repeats once on a network error or 5xx, never on a 4xx. The retry uses the cBot's `Timer`.
+- Built against the cTrader.Automate 1.0.21 NuGet package and unit-tested (see [`tests/ctrader-json`](tests/ctrader-json)), not run inside cTrader.
+
 ## Licence
 
-MIT, see [LICENSE](LICENSE). HoldAlarms is not affiliated with MetaQuotes or NinjaTrader. MetaTrader is a trademark of MetaQuotes Ltd. NinjaTrader is a trademark of its owner.
+MIT, see [LICENSE](LICENSE). HoldAlarms is not affiliated with MetaQuotes, NinjaTrader or Spotware. MetaTrader is a trademark of MetaQuotes Ltd. NinjaTrader and cTrader are trademarks of their owners.
