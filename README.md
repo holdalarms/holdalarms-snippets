@@ -11,6 +11,7 @@ private: the token in it identifies your account.
 | Platform | Folder | Setup guide |
 |---|---|---|
 | MetaTrader 5 / MetaTrader 4 (MQL5 / MQL4) | [`metatrader/`](metatrader/) | [holdalarms.com/docs/metatrader-setup](https://holdalarms.com/docs/metatrader-setup) |
+| NinjaTrader 8 (NinjaScript C#) | [`ninjatrader/`](ninjatrader/) | [holdalarms.com/docs/ninjatrader-setup](https://holdalarms.com/docs/ninjatrader-setup) |
 
 ## MetaTrader 5 and 4
 
@@ -40,6 +41,28 @@ Good to know (from the [MQL5 reference](https://www.mql5.com/en/docs/network/web
 
 Not tested in the Strategy Tester, because MetaTrader doesn't allow `WebRequest()` there.
 
+## NinjaTrader 8
+
+1. Copy `ninjatrader/HoldAlarmsClient.cs` and `ninjatrader/HoldAlarmsNotifier.cs` into
+   `Documents\NinjaTrader 8\bin\Custom\Indicators`.
+2. Open the NinjaScript Editor and press F5 to compile.
+3. Add the HoldAlarmsNotifier indicator to a chart and paste your webhook URL into its settings.
+   It sends a test alert when realtime data starts, then one alert per closed bar.
+4. In your own indicator or strategy, call:
+
+   ```csharp
+   HoldAlarms.HoldAlarmsClient.AlertAsync(url, "ninjatrader8", Instrument.FullName, "buy", Close[0]);
+   HoldAlarms.HoldAlarmsClient.SendAsync(url, "{\"ticker\":\"ES\",\"action\":\"sell\"}");
+   ```
+
+Good to know:
+
+- The send runs on a background thread, so `OnBarUpdate` isn't held up. Results show in the NinjaScript Output window.
+- Each try waits at most 3 seconds; it repeats once on a network error or 5xx, never on a 4xx.
+- The example skips historical bars, so loading a chart doesn't fire old alerts.
+- `HoldAlarmsClient.cs` builds for .NET Framework 4.8 and was tested against a local mock server (see [`tests/`](tests/)).
+  The indicator was type-checked against stand-ins, not inside NinjaTrader.
+
 ## Licence
 
-MIT, see [LICENSE](LICENSE). HoldAlarms is not affiliated with MetaQuotes. MetaTrader is a trademark of MetaQuotes Ltd.
+MIT, see [LICENSE](LICENSE). HoldAlarms is not affiliated with MetaQuotes or NinjaTrader. MetaTrader is a trademark of MetaQuotes Ltd. NinjaTrader is a trademark of its owner.
