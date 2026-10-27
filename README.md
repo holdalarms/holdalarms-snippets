@@ -26,7 +26,7 @@ private: the token in it identifies your account.
 
    // anywhere in your EA:
    HoldAlarmsAlert(InpWebhookUrl, "buy");                         // small JSON alert
-   HoldAlarmsSend(InpWebhookUrl, "{\"ticker\":\"EURUSD\",\"action\":\"sell\"}"); // your own body
+   HoldAlarmsSend(InpWebhookUrl, "{\"ticker\":\"EURGBP\",\"action\":\"sell\"}"); // your own body
    ```
 
 4. Run `Scripts/HoldAlarmsTest` once to send a test alert.
